@@ -3,6 +3,7 @@ function Astar(startNode, endNode)
     let openSet = [];
     let closedSet = [];
     let path = [];
+    let visitedNodes = [];
 
     openSet.push(startNode);
     while(openSet.length > 0) {
@@ -14,6 +15,7 @@ function Astar(startNode, endNode)
         }
 
         let current = openSet[leastIndex];
+        visitedNodes.push(current);
 
         if(current === endNode)
         {
