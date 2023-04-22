@@ -16,6 +16,10 @@
   background-color: grey;
 }
 
+.node-shelf {
+  background-color: burlywood;
+}
+
 .node-shortest-path {
   animation-name: shortestPath;
   animation-duration: 1.5s;
