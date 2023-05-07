@@ -2,14 +2,18 @@ import React, { useState, useEffect } from "react";
 import Node from "./Node";
 import Astar from "../astarAlgorithm/astar";
 import "./Pathfind.css";
+import Constants from "./Constants";
 
 const cols = 50;
-const rows = 20;
+const rows = 30;
+const walls = Constants.walls;
+const shelfs = Constants.shelfs;
 
 const NODE_START_ROW = 1;
 const NODE_START_COL = 1;
-const NODE_END_ROW = 2;
-const NODE_END_COL = 10;
+const NODE_END_ROW = 1;
+const NODE_END_COL = 21;
+let sciany = [];
 
 const Pathfind = () => {
   const [Grid, setGrid] = useState([]);
@@ -42,9 +46,6 @@ const Pathfind = () => {
       }
     }
 
-    console.log(grid);
-
-
     let path = Astar(startNode, endNode);
     setPath(path);
   };
@@ -53,19 +54,12 @@ const Pathfind = () => {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         grid[i][j] = new Spot(i, j);
-        if (i == 0 || i == rows - 1 || j == 0 || j == cols - 1) grid[i][j].isWall = true;
+        if (i === 0 || i === rows - 1 || j === 0 || j === cols - 1) grid[i][j].isWall = true;  //wall border
+        if (walls.find(el => JSON.stringify(el) === JSON.stringify([i,j])) && !grid[i][j].isEnd) grid[i][j].isWall = true; //build walls from array
+        if (shelfs.find(el => JSON.stringify(el) === JSON.stringify([i,j])) && !grid[i][j].isEnd) grid[i][j].isShelf = true; //build shelfs from array
       }
     }
 
-    grid[9][10] = new Spot(9, 10, true);
-    grid[8][10] = new Spot(8, 10, true);
-    grid[7][10] = new Spot(7, 10, true);
-    grid[6][10] = new Spot(6, 10, true);
-    grid[4][10] = new Spot(4, 10, true);
-    grid[3][10] = new Spot(3, 10, true);
-    grid[2][10] = new Spot(2, 10, false, true, 3);
-    grid[1][10] = new Spot(1, 10, false, true, 3);
-    grid[0][10] = new Spot(0, 10, true);
   };
 
   const addNeighbours = (grid) => {
@@ -124,18 +118,26 @@ const Pathfind = () => {
     }
   }
 
+  const dobuduj = (event) => {
+    let id = event.target.id;
+    event.target.style.backgroundColor = "yellow";
+    let x = Number(id.substring(id.indexOf("-")+1).substring(0, id.substring(id.indexOf("-")+1).indexOf("-")));
+    let y = Number(id.substring(id.lastIndexOf("-")+1));
+    sciany.push([x,y]);
+  }
+
   const gridWithNode = (
     <div>
       {Grid.map((row, rowIndex) => {
         return (
-          <div key={rowIndex} className="rowWrapper">
+          <div key={rowIndex} className="rowWrapper" onClick={e => dobuduj(e)}>
             {row.map((col, colIndex) => {
               const { isStart, isEnd } = col;
               return (
                 <Node
                   key={colIndex}
                   isStart={isStart}
-                  isEnd={rowIndex === NODE_END_ROW && colIndex === NODE_END_COL}
+                  isEnd={isEnd}
                   row={rowIndex}
                   col={colIndex}
                   wall={col.isWall}
@@ -150,7 +152,7 @@ const Pathfind = () => {
   );
 
   const visualizeShortestPath = (shortestPathNodes) => {
-    for (let i = 0; i < Path.length; i++) {
+    for (let i = 1; i < Path.length-1; i++) {
       setTimeout(() => {
         const node = Path[i];
         document.getElementById(`node-${node.x}-${node.y}`).className =
@@ -159,18 +161,17 @@ const Pathfind = () => {
     }
   };
 
-  const visualizePath = () => {
-    console.log("Visualazing");
-  };
-
-  console.log(Path);
   return (
-    <div className="wrapper">
+    <>
       <button onClick={visualizeShortestPath}>Pokaz sciezke</button>
-      <div className="gridContainer">
-        {gridWithNode}
+      <button onClick={() => console.log(JSON.stringify(sciany))}>Pokaz dobudowe</button>
+      <div className="wrapper">
+        <div className="gridContainer">
+          {gridWithNode}
+        </div>
       </div>
-    </div>
+    </>
+
   );
 };
 
