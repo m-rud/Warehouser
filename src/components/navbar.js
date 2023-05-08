@@ -11,12 +11,12 @@ function Navbar() {
 
         },
         {
-            label: "ITEMS",
+            label: "PRODUKTY",
             path: "/items",
 
         },
         {
-            label: "MAP",
+            label: "DOSTAWA",
             path: "/map",
         }
     ]

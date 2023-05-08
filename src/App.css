@@ -5,6 +5,10 @@
   height: 100%;
 }
 
+.router {
+  overflow: auto;
+}
+
 html,
 body,
 #root,
@@ -21,7 +25,7 @@ body,
 }
 
 .navbarButton {
-  width: 100px;
+  width: 130px;
   height: 100%;
   font-weight: bold;
   font-size: 21px;
@@ -32,7 +36,7 @@ body,
 
 .navbarButton-visited {
   background-color: rgb(117, 158, 34);
-  width: 100px;
+  width: 130px;
   height: 100%;
   font-weight: bold;
   font-size: 21px;
@@ -85,5 +89,17 @@ body,
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .show-on-desktop {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 481px) {
+  .hide-on-desktop {
+    display: none;
   }
 }
