@@ -1,5 +1,7 @@
 .wrapper {
     margin: auto;
+    display: flex;
+    
 }
 
 .rowWrapper {
