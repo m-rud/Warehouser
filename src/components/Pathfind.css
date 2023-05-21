@@ -1,8 +1,15 @@
 .wrapper {
-    max-width: 80%;
     margin: auto;
+    display: flex;
+    
 }
 
 .rowWrapper {
     display: flex;
+    justify-content: center;
+    float: left;
+}
+
+.gridContainer {
+    margin-top: 10px;
 }

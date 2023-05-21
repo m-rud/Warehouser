@@ -1,7 +1,7 @@
 .node {
-  width: 40px;
-  height: 40px;
-  border: 1px solid black;
+  width: 20px;
+  height: 20px;
+  border: 1px solid gray;
 }
 
 .node-start {
@@ -14,6 +14,10 @@
 
 .node-wall {
   background-color: grey;
+}
+
+.node-shelf {
+  background-color: burlywood;
 }
 
 .node-shortest-path {
