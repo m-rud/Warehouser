@@ -8,9 +8,11 @@ function Items() {
     const [currentItem, setCurrentItem] = useState([]);
     const [newItem, setNewItem] = useState([]);
     const [editing, setEditing] = useState(false);
+    const [addItemShown, setAddItemShown] = useState(false);
 
     const getItem = async (e) => {
         await getDocs(query(collection(db, "items"), orderBy("name"))).then((querySnapshot) => {
+            console.log(querySnapshot.docs[0].data());
             setItems(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
         });
     }
@@ -39,41 +41,55 @@ function Items() {
         event.preventDefault();
         await addDoc(collection(db, "items"), {
             name: newItem.name,
-            shelf: parseInt(newItem.shelf, 10),
-            shelf_row: parseInt(newItem.shelf_row, 10),
-            quantity: parseInt(newItem.quantity, 10),
+            shelf: newItem.shelf,
+            quantity: 0,
         });
         setNewItem({});
+        setAddItemShown(false);
         getItem();
     }
 
-    const addItemComponent = (
-        <div style={{ width: "100%", height: "100%", display: "flex", flexFlow: "column", justifyContent: "center" }}>
-            <div style={{ textAlign: "left", fontSize: "36px", fontWeight: "bold", margin: "0 auto" }}>Dodaj produkt</div>
-            <div style={{ width: "70%", height: "50%", margin: "10px auto", borderRadius: "25px", boxShadow: "5px 10px 18px #888888" }}>
-                <form style={{ display: "flex", flexFlow: "column", padding: "20px" }} onSubmit={handleSubmit}>
-                    <label style={{ textAlign: "left", width: "100%", marginBottom: "20px" }}>Nazwa produktu:<br></br>
-                        <input style={{ marginTop: "10px", width: "98%" }} type="text" name="name" value={newItem.name || ""} onChange={handleChange} />
-                    </label>
-                    <label style={{ textAlign: "left", width: "100%", marginBottom: "20px" }}>Numer szafki:<br></br>
-                        <input style={{ marginTop: "10px", width: "98%" }} type="text" name="shelf" value={newItem.shelf || ""} onChange={handleChange} />
-                    </label>
-                    <label style={{ textAlign: "left", width: "100%", marginBottom: "20px" }}>Numer półki:<br></br>
-                        <input style={{ marginTop: "10px", width: "98%" }} type="text" name="shelf_row" value={newItem.shelf_row || ""} onChange={handleChange} />
-                    </label>
-                    <label style={{ textAlign: "left", width: "100%", marginBottom: "20px" }}>Ilość produktu w magazynie:<br></br>
-                        <input style={{ marginTop: "10px", width: "98%" }} type="text" name="quantity" value={newItem.quantity || ""} onChange={handleChange} />
-                    </label>
-                    <input style={{ margin: "30px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "lightgreen" }} type="submit" value="Dodaj produkt" />
-                </form>
-            </div>
-        </div>
-    )
+    function addItemComponent(isShown) {
+        if (isShown) {
+            return (
+                <div style={{ width: "100%", height: "100%", display: "flex", flexFlow: "column", justifyContent: "center" }}>
+                    <div style={{ width: "70%", height: "45%", margin: "10px auto", borderRadius: "25px", boxShadow: "5px 10px 18px #888888", backgroundColor: "white" }}>
+                        <form style={{ display: "flex", flexFlow: "column", padding: "20px" }} onSubmit={handleSubmit}>
+                            <label style={{ textAlign: "left", width: "100%", marginBottom: "20px" }}>Nazwa produktu:<br></br>
+                                <input style={{ marginTop: "10px", width: "98%" }} type="text" name="name" value={newItem.name || ""} onChange={handleChange} />
+                            </label>
+                            <label style={{ textAlign: "left", width: "100%", marginBottom: "20px" }}>Numery szafek:<br></br>
+                                <input style={{ marginTop: "10px", width: "98%" }} type="text" name="shelf" value={newItem.shelf || ""} onChange={handleChange} />
+                            </label>
+                            <input style={{ margin: "30px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "lightgreen" }} type="submit" value="Dodaj produkt" />
+                            <button onClick={() => setAddItemShown(false)} style={{ margin: "30px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "red" }}>Anuluj</button>
+                        </form>
+                    </div>
+                </div>
+            )
+        } else {
+            return (
+                <div style={{ width: "100%", height: "100%", display: "flex", flexFlow: "column", justifyContent: "center" }}>
+                    <div style={{ width: "95%", height: "95%", overflow: "auto", borderRadius: "25px", margin: "auto", boxShadow: "5px 10px 18px #888888" }}>
+                        {
+                            items?.map((item, i) => (
+                                <div key={item.id} onClick={() => { updateCurrentItem(item.id) }} style={{ width: "95%", height: "120px", borderRadius: "25px", boxShadow: "5px 0px 18px #888888", margin: "20px auto" }}>
+                                    <div style={{ padding: "20px 20px 0", fontSize: "21px", fontWeight: "bold", textAlign: "left" }}>{item.name}</div>
+                                    <div style={{ padding: "5px 20px", fontSize: "16px", textAlign: "left" }}>Ilość w magazynie: {item.quantity}</div>
+                                    <div style={{ padding: "5px 20px", fontSize: "16px", textAlign: "left" }}>Numery regałów: {item.shelf}</div>
+                                </div>
+                            ))
+                        }
+                    </div>
+                    <div onClick={() => setAddItemShown(!addItemShown)} style={{ height: "70px", width: "70px", position: "absolute", backgroundColor: "lightgreen", borderRadius: "50px", margin: "20px", bottom: "0", right: "0" }}><p style={{ fontSize: "40px", fontWeight: "bold", marginTop: "5px" }}>+</p></div>
+                </div>
+            )
+        }
+    }
 
     const itemsList = (
         <div style={{ width: "100%", height: "100%", display: "flex", flexFlow: "column", justifyContent: "center" }}>
-            <div style={{ textAlign: "left", fontSize: "36px", fontWeight: "bold" }}>Lista produktów</div>
-            <div style={{ width: "95%", height: "90%", overflow: "auto", borderRadius: "25px", marginTop: "1%", boxShadow: "5px 10px 18px #888888" }}>
+            <div style={{ width: "95%", height: "95%", overflow: "auto", borderRadius: "25px", margin: "auto", boxShadow: "5px 10px 18px #888888" }}>
                 {
                     items?.map((item, i) => (
                         <div key={item.id} onClick={() => { updateCurrentItem(item.id) }} style={{ width: "95%", height: "100px", borderRadius: "25px", boxShadow: "5px 0px 18px #888888", margin: "20px auto" }}>
@@ -83,6 +99,7 @@ function Items() {
                     ))
                 }
             </div>
+            <div onClick={() => setAddItemShown(true)} style={{ height: "70px", width: "70px", position: "absolute", backgroundColor: "lightgreen", borderRadius: "50px", margin: "20px", bottom: "0", right: "0" }}><p style={{ fontSize: "40px", fontWeight: "bold", marginTop: "5px" }}>+</p></div>
         </div>
     );
 
@@ -141,10 +158,10 @@ function Items() {
     )
 
     return (
-        <div style={{ width: "100%", height: "100%", display: "flex", flexFlow: "row" }}>
-            <div style={{ height: "100%", flex: "1", display: "flex", justifyContent: "center" }}>{addItemComponent}</div>
-            <div style={{ height: "100%", flex: "1", display: "flex", justifyContent: "center" }}>{itemsList}</div>
-            <div style={{ height: "100%", flex: "1", display: "flex", justifyContent: "center" }}>{itemDetails}</div>
+        <div style={{ width: "100%", height: "100%" }}>
+            <div style={{ height: "100%", width: "100%", display: "flex", justifyContent: "center" }}>{addItemComponent(addItemShown)}</div>
+            {/* <div style={{ height: "100%", display: "flex", justifyContent: "center" }}>{itemsList}</div> */}
+            {/* <div style={{ height: "100%", flex: "1", display: "flex", justifyContent: "center" }}>{itemDetails}</div> */}
         </div>
     );
 }
