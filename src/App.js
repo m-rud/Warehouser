@@ -7,6 +7,7 @@ import Navbar from './components/navbar';
 import Items from "./pages/items";
 import Map from "./pages/map";
 import Home from "./pages/home";
+import Scanner from "./components/Scanner";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/map" exact element={<Map />} />
                 </Routes>
             </div>
+            <Scanner/>
         </div>
     );
 }
