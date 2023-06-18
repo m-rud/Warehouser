@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
-import { collection, getDocs, getDoc, doc, addDoc, orderBy, query, deleteDoc } from "firebase/firestore"
-
+import { collection, getDocs, getDoc, setDoc, doc, addDoc, orderBy, query, deleteDoc, where } from "firebase/firestore"
 import { db } from "../firebase"
 
-function Items() {
+function Items({ user }) {
     const [items, setItems] = useState([]);
     const [currentItem, setCurrentItem] = useState([]);
     const [newItem, setNewItem] = useState([]);
@@ -49,6 +48,18 @@ function Items() {
         getItem();
     }
 
+    function addButton() {
+        if (user) {
+            if (user.role != "pracownik") {
+                return (
+                    <div onClick={() => setAddItemShown(!addItemShown)} style={{ height: "70px", width: "70px", position: "absolute", backgroundColor: "lightgreen", borderRadius: "50px", margin: "20px", bottom: "0", right: "0" }}><p style={{ fontSize: "40px", fontWeight: "bold", marginTop: "5px" }}>+</p></div>
+                )
+            }
+        } else {
+            return <div></div>
+        }
+    }
+
     function addItemComponent(isShown) {
         if (isShown) {
             return (
@@ -81,7 +92,7 @@ function Items() {
                             ))
                         }
                     </div>
-                    <div onClick={() => setAddItemShown(!addItemShown)} style={{ height: "70px", width: "70px", position: "absolute", backgroundColor: "lightgreen", borderRadius: "50px", margin: "20px", bottom: "0", right: "0" }}><p style={{ fontSize: "40px", fontWeight: "bold", marginTop: "5px" }}>+</p></div>
+                    {addButton()}
                 </div>
             )
         }

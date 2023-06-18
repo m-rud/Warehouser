@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 
 import { collection, getDocs, getDoc, setDoc, doc, addDoc, orderBy, query, deleteDoc, where } from "firebase/firestore"
-
+import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { db } from "../firebase"
 
-function Map() {
+function Map({ user }) {
     const [delivery, setDelivery] = useState([]);
     const [items, setItems] = useState([]);
     const [newDelivery, setNewDelivery] = useState([]);
@@ -21,12 +21,10 @@ function Map() {
         });
         if (newDelivery.length == 0) {
             await getDocs(query(collection(db, "items"), orderBy("name"))).then((querySnapshot) => {
-                console.log(querySnapshot.docs[0].data());
                 setItems(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
             });
         } else {
             await getDocs(query(collection(db, "items"), orderBy("name"), where("name", "not-in", newDelivery.map((item) => (item.name))))).then((querySnapshot) => {
-                console.log(querySnapshot.docs[0].data());
                 setItems(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
             });
         }
@@ -36,7 +34,6 @@ function Map() {
         getDelivery();
         // eslint-disable-next-line
     }, [])
-
 
     function addItemToDelivery(item) {
         let newItem = {
@@ -101,6 +98,18 @@ function Map() {
         getDelivery();
     }
 
+    function addButton() {
+        if (user) {
+            if (user.role != "pracownik") {
+                return (
+                    <div onClick={() => setScreen("newDelivery")} style={{ height: "70px", width: "70px", position: "absolute", backgroundColor: "lightgreen", borderRadius: "50px", margin: "20px", bottom: "0", right: "0" }}><p style={{ fontSize: "40px", fontWeight: "bold", marginTop: "5px" }}>+</p></div>
+                )
+            }
+        } else {
+            return <div></div>
+        }
+    }
+
     function DeliveryScreen(screen) {
         const [counter, setCounter] = useState(0);
 
@@ -117,7 +126,7 @@ function Map() {
                             ))
                         }
                     </div>
-                    <div onClick={() => setScreen("newDelivery")} style={{ height: "70px", width: "70px", position: "absolute", backgroundColor: "lightgreen", borderRadius: "50px", margin: "20px", bottom: "0", right: "0" }}><p style={{ fontSize: "40px", fontWeight: "bold", marginTop: "5px" }}>+</p></div>
+                    {addButton()}
                 </div>
             )
         } else if (screen == "newDelivery") {
