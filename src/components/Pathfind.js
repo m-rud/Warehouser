@@ -177,7 +177,7 @@ const Pathfind = () => {
         const node = Path[i];
         document.getElementById(`node-${node.x}-${node.y}`).className =
           "node node-shortest-path";
-      }, 10 * i);
+      }, 50 * i);
     }
   };
 

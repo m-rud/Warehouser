@@ -6,27 +6,23 @@ import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import CloseIcon from "@mui/icons-material/Close";
 
 const Scanner = () => {
-  const [scanResult, setScanResult] = useState(null);
   const [scanning, setScanning] = useState(false);
   const [qrCode, setQrCode] = useState();
 
   const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-    setScanResult(decodedText);
     console.log(`Scan result: ${decodedText}`, decodedResult);
     qrCode.stop().then(() => {
       qrCode.clear();
     });
   };
-  const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+  const config = { fps: 10, qrbox: { width: 300, height: 300 } };
 
   useEffect(() => {
     setQrCode(new Html5Qrcode("reader"));
   }, []);
 
   const run = () => {
-    console.log(scanning);
     if (!scanning) {
-      setScanResult(null);
       setScanning(true);
       qrCode.start(
         { facingMode: "environment" },
