@@ -1,63 +1,57 @@
-import { Html5QrcodeScanner, Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useState } from "react";
-import Box from '@mui/material/Box';
-import Fab from '@mui/material/Fab';
-import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import CloseIcon from '@mui/icons-material/Close';
+import Box from "@mui/material/Box";
+import Fab from "@mui/material/Fab";
+import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Scanner = () => {
+  const [scanResult, setScanResult] = useState(null);
+  const [scanning, setScanning] = useState(false);
+  const [qrCode, setQrCode] = useState();
 
-    const [scanResult, setScanResult] = useState(null);
-    const [scanning, setScanning] = useState(false);
+  const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+    setScanResult(decodedText);
+    console.log(`Scan result: ${decodedText}`, decodedResult);
+    qrCode.stop().then(() => {
+      qrCode.clear();
+    });
+  };
+  const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-    let qrCode;
-    const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-        setScanResult(decodedText);
-        console.log(`Scan result: ${decodedText}`, decodedResult);
-        qrCode.stop().then(() => {
-            qrCode.clear();
-        })
-    };
-    const config = { fps: 10, qrbox: { width: 200, height: 200 } };
+  useEffect(() => {
+    setQrCode(new Html5Qrcode("reader"));
+  }, []);
 
-    useEffect(() => {
-
-    }, []);
-
-    const run = () => {
-        if (!scanning) {
-            setScanResult(null);
-            qrCode = new Html5Qrcode("reader");
-            qrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback, (error) => console.log(error));
-            setScanning(true);
-        }
-        else {
-            qrCode.stop().then(() => {
-                qrCode.clear();
-            })
-            setScanning(false);
-        }
-        
+  const run = () => {
+    console.log(scanning);
+    if (!scanning) {
+      setScanResult(null);
+      setScanning(true);
+      qrCode.start(
+        { facingMode: "environment" },
+        config,
+        qrCodeSuccessCallback,
+        (error) => console.log(error)
+      );
+    } else {
+      qrCode.stop();
+      setScanning(false);
     }
-//<button onClick={run} style={{ position: 'fixed', bottom: '10px', right: '10px'}}>QR</button>
-    return (
-        <div>
-            <Box
-            m={2}
-            position="fixed"
-            bottom="0px"
-            right="0px"
-            >
-            <Fab color={scanning ? "warning" : "primary"} aria-label="add" onClick={run} >
-                {scanning ? <CloseIcon/> : <QrCodeScannerIcon />}
-            </Fab>
-            </Box>
-            {scanResult
-            ? <div>QR result: {scanResult}</div>
-            : <div id="reader"></div>
-            }
-        </div>
-    );
-}
+  };
+  return (
+    <div>
+      <Box m={2} position="absolute" bottom="0px" right="0px">
+        <Fab
+          color={scanning ? "warning" : "primary"}
+          aria-label="add"
+          onClick={run}
+        >
+          {scanning ? <CloseIcon /> : <QrCodeScannerIcon />}
+        </Fab>
+      </Box>
+    </div>
+  );
+};
 
 export default Scanner;

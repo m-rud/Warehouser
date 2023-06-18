@@ -14,7 +14,6 @@ body,
 #root,
 .router {
   height: 100%;
-  overflow-y: hidden;
 }
 
 .navbar {
@@ -49,10 +48,9 @@ body,
 .navbarButton-visited:hover,
 .navbarButton:hover {
   background-color: rgb(117, 158, 34);
-  ;
 }
 
-.navbar>a {
+.navbar > a {
   text-decoration: none;
   color: black;
 }
