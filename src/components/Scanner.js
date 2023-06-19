@@ -1,54 +1,53 @@
-import { Html5QrcodeScanner, Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import Fab from "@mui/material/Fab";
+import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
+import CloseIcon from "@mui/icons-material/Close";
 
-function Scanner() {
+const Scanner = () => {
+  const [scanning, setScanning] = useState(false);
+  const [qrCode, setQrCode] = useState();
 
-    const [scanResult, setScanResult] = useState(null);
+  const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+    console.log(`Scan result: ${decodedText}`, decodedResult);
+    qrCode.stop().then(() => {
+      qrCode.clear();
+    });
+  };
+  const config = { fps: 10, qrbox: { width: 300, height: 300 } };
 
-    let qrCode;
-    const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-        setScanResult(decodedText);
-        console.log(`Scan result: ${decodedText}`, decodedResult);
-        qrCode.stop().then(() => {
-            qrCode.clear();
-        })
-    };
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+  useEffect(() => {
+    setQrCode(new Html5Qrcode("reader"));
+  }, []);
 
-    useEffect(() => {
-        // File based scanning
-        const fileinput = document.getElementById('qr-input-file');
-        fileinput.addEventListener('change', e => {
-        if (e.target.files.length == 0) {
-            return;
-        }
-        const imageFile = e.target.files[0];
-        qrCode.scanFile(imageFile, /* showImage= */false)
-        .then(qrCodeMessage => {
-            console.log(qrCodeMessage);
-        })
-        .catch(err => {
-            console.log(`Error scanning file. Reason: ${err}`)
-        });
-        });
-    }, []);
-
-    const run = () => {
-        setScanResult(null);
-        qrCode = new Html5Qrcode("reader");
-        qrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback, (error) => console.log(error));
+  const run = () => {
+    if (!scanning) {
+      setScanning(true);
+      qrCode.start(
+        { facingMode: "environment" },
+        config,
+        qrCodeSuccessCallback,
+        (error) => console.log(error)
+      );
+    } else {
+      qrCode.stop();
+      setScanning(false);
     }
-
-    return (
-        <div>
-            <button onClick={run} style={{ position: 'fixed', bottom: '10px', right: '10px'}}>QR</button>
-            {scanResult
-            ? <div>QR result: {scanResult}</div>
-            : <div id="reader"></div>
-            }
-            <input type="file" id="qr-input-file" accept="image/*"></input>
-        </div>
-    );
-}
+  };
+  return (
+    <div>
+      <Box m={2} position="absolute" bottom="0px" right="0px">
+        <Fab
+          color={scanning ? "warning" : "primary"}
+          aria-label="add"
+          onClick={run}
+        >
+          {scanning ? <CloseIcon /> : <QrCodeScannerIcon />}
+        </Fab>
+      </Box>
+    </div>
+  );
+};
 
 export default Scanner;

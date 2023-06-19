@@ -49,7 +49,7 @@ function App() {
                             <Route path="/map" exact element={<Map user={currentUser} />} />
                         </Routes>
                     </div>
-                    <Scanner />
+                    <div id="reader"></div>
                 </div>
             )
         } else {

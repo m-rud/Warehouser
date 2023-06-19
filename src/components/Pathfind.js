@@ -36,8 +36,8 @@ const Pathfind = () => {
 
     addNeighbours(grid);
 
-    let startNode = null
-    let endNode = null
+    let startNode = null;
+    let endNode = null;
 
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
@@ -54,12 +54,20 @@ const Pathfind = () => {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         grid[i][j] = new Spot(i, j);
-        if (i === 0 || i === rows - 1 || j === 0 || j === cols - 1) grid[i][j].isWall = true;  //wall border
-        if (walls.find(el => JSON.stringify(el) === JSON.stringify([i,j])) && !grid[i][j].isEnd) grid[i][j].isWall = true; //build walls from array
-        if (shelfs.find(el => JSON.stringify(el) === JSON.stringify([i,j])) && !grid[i][j].isEnd) grid[i][j].isShelf = true; //build shelfs from array
+        if (i === 0 || i === rows - 1 || j === 0 || j === cols - 1)
+          grid[i][j].isWall = true; //wall border
+        if (
+          walls.find((el) => JSON.stringify(el) === JSON.stringify([i, j])) &&
+          !grid[i][j].isEnd
+        )
+          grid[i][j].isWall = true; //build walls from array
+        if (
+          shelfs.find((el) => JSON.stringify(el) === JSON.stringify([i, j])) &&
+          !grid[i][j].isEnd
+        )
+          grid[i][j].isShelf = true; //build shelfs from array
       }
     }
-
   };
 
   const addNeighbours = (grid) => {
@@ -90,10 +98,14 @@ const Pathfind = () => {
     this.addneighbours = function (grid) {
       let i = this.x;
       let j = this.y;
-      if (i > 0 && !grid[i - 1][j].isWall && !grid[i - 1][j].isShelf) this.neighbours.push(grid[i - 1][j]);
-      if (j < cols - 1 && !grid[i][j + 1].isWall && !grid[i][j + 1].isShelf) this.neighbours.push(grid[i][j + 1]);
-      if (i < rows - 1 && !grid[i + 1][j].isWall && !grid[i + 1][j].isShelf) this.neighbours.push(grid[i + 1][j]);
-      if (j > 0 && !grid[i][j - 1].isWall && !grid[i][j - 1].isShelf) this.neighbours.push(grid[i][j - 1]);
+      if (i > 0 && !grid[i - 1][j].isWall && !grid[i - 1][j].isShelf)
+        this.neighbours.push(grid[i - 1][j]);
+      if (j < cols - 1 && !grid[i][j + 1].isWall && !grid[i][j + 1].isShelf)
+        this.neighbours.push(grid[i][j + 1]);
+      if (i < rows - 1 && !grid[i + 1][j].isWall && !grid[i + 1][j].isShelf)
+        this.neighbours.push(grid[i + 1][j]);
+      if (j > 0 && !grid[i][j - 1].isWall && !grid[i][j - 1].isShelf)
+        this.neighbours.push(grid[i][j - 1]);
     };
     this.alignEnd = function (grid) {
       if (this.front) {
@@ -115,22 +127,30 @@ const Pathfind = () => {
             break;
         }
       }
-    }
+    };
   }
 
   const dobuduj = (event) => {
     let id = event.target.id;
     event.target.style.backgroundColor = "yellow";
-    let x = Number(id.substring(id.indexOf("-")+1).substring(0, id.substring(id.indexOf("-")+1).indexOf("-")));
-    let y = Number(id.substring(id.lastIndexOf("-")+1));
-    sciany.push([x,y]);
-  }
+    let x = Number(
+      id
+        .substring(id.indexOf("-") + 1)
+        .substring(0, id.substring(id.indexOf("-") + 1).indexOf("-"))
+    );
+    let y = Number(id.substring(id.lastIndexOf("-") + 1));
+    sciany.push([x, y]);
+  };
 
   const gridWithNode = (
     <div>
       {Grid.map((row, rowIndex) => {
         return (
-          <div key={rowIndex} className="rowWrapper" onClick={e => dobuduj(e)}>
+          <div
+            key={rowIndex}
+            className="rowWrapper"
+            onClick={(e) => dobuduj(e)}
+          >
             {row.map((col, colIndex) => {
               const { isStart, isEnd } = col;
               return (
@@ -152,26 +172,25 @@ const Pathfind = () => {
   );
 
   const visualizeShortestPath = (shortestPathNodes) => {
-    for (let i = 1; i < Path.length-1; i++) {
+    for (let i = 1; i < Path.length - 1; i++) {
       setTimeout(() => {
         const node = Path[i];
         document.getElementById(`node-${node.x}-${node.y}`).className =
           "node node-shortest-path";
-      }, 10 * i);
+      }, 50 * i);
     }
   };
 
   return (
     <>
       <button onClick={visualizeShortestPath}>Pokaz sciezke</button>
-      <button onClick={() => console.log(JSON.stringify(sciany))}>Pokaz dobudowe</button>
+      <button onClick={() => console.log(JSON.stringify(sciany))}>
+        Pokaz dobudowe
+      </button>
       <div className="wrapper">
-        <div className="gridContainer">
-          {gridWithNode}
-        </div>
+        <div className="gridContainer">{gridWithNode}</div>
       </div>
     </>
-
   );
 };
 

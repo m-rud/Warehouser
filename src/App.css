@@ -14,33 +14,32 @@ body,
 #root,
 .router {
   height: 100%;
-  overflow-y: hidden;
 }
 
 .navbar {
   display: flex;
   flex-flow: row;
+  justify-content: space-around;
   background-color: yellowgreen;
   width: 100%;
   height: 50px;
 }
 
 .navbarButton {
-  width: 130px;
   height: 100%;
+  padding-inline: 10px;
   font-weight: bold;
-  font-size: 21px;
+  font-size: 20px;
   display: flex;
-  justify-content: center;
   align-items: center;
 }
 
 .navbarButton-visited {
   background-color: rgb(117, 158, 34);
-  width: 130px;
   height: 100%;
+  padding-inline: 10px;
   font-weight: bold;
-  font-size: 21px;
+  font-size: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -49,10 +48,9 @@ body,
 .navbarButton-visited:hover,
 .navbarButton:hover {
   background-color: rgb(117, 158, 34);
-  ;
 }
 
-.navbar>a {
+.navbar > a {
   text-decoration: none;
   color: black;
 }
