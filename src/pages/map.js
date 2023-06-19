@@ -131,7 +131,7 @@ function Map({ user }) {
                             delivery?.map((delivery, i) => (
                                 <div key={delivery.id} onClick={() => { setSelectedDelivery(delivery); setScreen("deliveryDetails") }} style={{ width: "95%", height: "100px", borderRadius: "25px", boxShadow: "5px 0px 18px #888888", margin: "20px auto" }}>
                                     <div style={{ padding: "20px 20px 0", fontSize: "21px", fontWeight: "bold", textAlign: "left" }}>{delivery.date}</div>
-                                    <div style={{ width: "18%", marginTop: "6px", marginLeft: "10px", borderRadius: "20px", padding: "5px 20px", fontSize: "16px", textAlign: "center", backgroundColor: delivery.status == "Processing" ? "yellow" : "lightgreen" }}>{delivery.status}</div>
+                                    <div style={{ width: "fit-content", marginTop: "6px", marginLeft: "10px", borderRadius: "20px", padding: "5px 20px", fontSize: "16px", textAlign: "center", backgroundColor: delivery.status == "Processing" ? "yellow" : "lightgreen" }}>{delivery.status}</div>
                                 </div>
                             ))
                         }
