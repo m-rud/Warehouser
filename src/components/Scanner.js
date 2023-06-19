@@ -1,18 +1,17 @@
 import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useState } from "react";
-import { collection, getDocs, getDoc, doc, addDoc, orderBy, query, deleteDoc } from "firebase/firestore"
+import { getDoc, doc } from "firebase/firestore"
 import { db } from "../firebase"
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import CloseIcon from "@mui/icons-material/Close";
 
-const Scanner = ({setShelf_column, setShelf_row, setOnShelf}) => {
+const Scanner = ({ setShelf_column, setShelf_row, setOnShelf }) => {
   const [scanning, setScanning] = useState(false);
   const [qrCode, setQrCode] = useState();
 
   const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-    console.log(`Scan result: ${decodedText}`, decodedResult);
     qrCode.stop().then(() => {
       qrCode.clear();
     });
@@ -45,11 +44,10 @@ const Scanner = ({setShelf_column, setShelf_row, setOnShelf}) => {
     const docSnap = await getDoc(docRef);
 
     let itemDict = docSnap.data();
-    console.log(itemDict.shelf_column, " ", itemDict.shelf_row);
     setShelf_row(itemDict.shelf_row);
     setShelf_column(itemDict.shelf_column);
     setOnShelf(itemDict.onShelf);
-    };
+  };
 
   return (
     <div>
