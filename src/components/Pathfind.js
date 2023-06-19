@@ -16,21 +16,21 @@ let NODE_END_COL = null;
 let ON_SHELF = false;
 let sciany = [];
 
-const Pathfind = ({shelf_column, shelf_row, onShelf}) => {
+const Pathfind = ({ shelf_column, shelf_row, onShelf }) => {
   const [Grid, setGrid] = useState([]);
   const [Path, setPath] = useState([]);
 
   useEffect(() => {
-    if(onShelf !== null) ON_SHELF = onShelf;
-    if(ON_SHELF){
-      if(shelf_row !== null && shelf_column !== null) {
+    if (onShelf !== null) ON_SHELF = onShelf;
+    if (ON_SHELF) {
+      if (shelf_row !== null && shelf_column !== null) {
         NODE_START_COL = shelf_row;
         NODE_START_ROW = shelf_column;
         NODE_END_ROW = 3;
         NODE_END_COL = 3;
       }
     } else {
-      if(shelf_row !== null && shelf_column !== null){
+      if (shelf_row !== null && shelf_column !== null) {
         NODE_END_COL = shelf_row;
         NODE_END_ROW = shelf_column;
         NODE_START_COL = 3;
@@ -64,13 +64,13 @@ const Pathfind = ({shelf_column, shelf_row, onShelf}) => {
     }
 
     let path;
-    if(NODE_END_ROW !== null && NODE_END_COL !== null){
+    if (NODE_END_ROW !== null && NODE_END_COL !== null) {
       clearGrid();
       path = Astar(startNode, endNode);
-    setPath(path);
-    visualizeShortestPath(path);
+      setPath(path);
+      visualizeShortestPath(path);
     }
-  
+
   };
 
   const createSpot = (grid) => {
@@ -207,13 +207,13 @@ const Pathfind = ({shelf_column, shelf_row, onShelf}) => {
   const clearGrid = () => {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
-        if (document.getElementById(`node-${i}-${j}`).className == "node node-shortest-path") document.getElementById(`node-${i}-${j}`).className = "node";
+        if (document.getElementById(`node-${i}-${j}`) && document.getElementById(`node-${i}-${j}`).className == "node node-shortest-path") document.getElementById(`node-${i}-${j}`).className = "node";
       }
     }
   }
 
   //<button onClick={() => console.log(JSON.stringify(sciany))}>Pokaz dobudowe</button>
-        
+
   return (
     <>
       <div className="wrapper">
