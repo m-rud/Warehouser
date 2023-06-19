@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { collection, getDocs, getDoc, setDoc, doc, addDoc, orderBy, query, deleteDoc, where } from "firebase/firestore"
+import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { db } from "../firebase"
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import AddIcon from '@mui/icons-material/Add';
 
-function Map() {
+function Map({ user }) {
     const [delivery, setDelivery] = useState([]);
     const [items, setItems] = useState([]);
     const [newDelivery, setNewDelivery] = useState([]);
@@ -22,12 +23,10 @@ function Map() {
         });
         if (newDelivery.length == 0) {
             await getDocs(query(collection(db, "items"), orderBy("name"))).then((querySnapshot) => {
-                console.log(querySnapshot.docs[0].data());
                 setItems(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
             });
         } else {
             await getDocs(query(collection(db, "items"), orderBy("name"), where("name", "not-in", newDelivery.map((item) => (item.name))))).then((querySnapshot) => {
-                console.log(querySnapshot.docs[0].data());
                 setItems(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
             });
         }
@@ -37,7 +36,6 @@ function Map() {
         getDelivery();
         // eslint-disable-next-line
     }, [])
-
 
     function addItemToDelivery(item) {
         let newItem = {
@@ -102,6 +100,26 @@ function Map() {
         getDelivery();
     }
 
+    function addButton() {
+        if (user) {
+            if (user.role != "pracownik") {
+                return (
+                    <Box m={2} position="absolute" bottom="0px" right="0px">
+                        <Fab
+                            color="success"
+                            aria-label="add"
+                            onClick={() => setScreen("newDelivery")}
+                        >
+                            <AddIcon />
+                        </Fab>
+                    </Box>
+                )
+            }
+        } else {
+            return <div></div>
+        }
+    }
+
     function DeliveryScreen(screen) {
         const [counter, setCounter] = useState(0);
 
@@ -113,20 +131,12 @@ function Map() {
                             delivery?.map((delivery, i) => (
                                 <div key={delivery.id} onClick={() => { setSelectedDelivery(delivery); setScreen("deliveryDetails") }} style={{ width: "95%", height: "100px", borderRadius: "25px", boxShadow: "5px 0px 18px #888888", margin: "20px auto" }}>
                                     <div style={{ padding: "20px 20px 0", fontSize: "21px", fontWeight: "bold", textAlign: "left" }}>{delivery.date}</div>
-                                    <div style={{ width: "18%", marginTop: "6px", marginLeft: "10px", borderRadius: "20px", padding: "5px 20px", fontSize: "16px", textAlign: "center", backgroundColor: delivery.status == "Processing" ? "yellow" : "lightgreen" }}>{delivery.status}</div>
+                                    <div style={{ width: "fit-content", marginTop: "6px", marginLeft: "10px", borderRadius: "20px", padding: "5px 20px", fontSize: "16px", textAlign: "center", backgroundColor: delivery.status == "Processing" ? "yellow" : "lightgreen" }}>{delivery.status}</div>
                                 </div>
                             ))
                         }
                     </div>
-                    <Box m={2} position="absolute" bottom="0px" right="0px">
-                            <Fab
-                                color="success"
-                                aria-label="add"
-                                onClick={() => setScreen("newDelivery")}
-                            >
-                                <AddIcon />
-                            </Fab>
-                        </Box>
+                    {addButton()}
                 </div>
             )
         } else if (screen == "newDelivery") {
