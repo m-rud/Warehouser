@@ -9,19 +9,21 @@ const rows = 30;
 const walls = Constants.walls;
 const shelfs = Constants.shelfs;
 
-const NODE_START_ROW = 1;
-const NODE_START_COL = 1;
-const NODE_END_ROW = 1;
-const NODE_END_COL = 21;
+const NODE_START_ROW = 3;
+const NODE_START_COL = 3;
+let NODE_END_ROW = null;
+let NODE_END_COL = null;
 let sciany = [];
 
-const Pathfind = () => {
+const Pathfind = ({shelf_column, shelf_row}) => {
   const [Grid, setGrid] = useState([]);
   const [Path, setPath] = useState([]);
 
   useEffect(() => {
+    if(shelf_row !== null)NODE_END_COL = shelf_row;
+    if(shelf_column !== null)NODE_END_ROW = shelf_column;
     initializeGrid();
-  }, []);
+  }, [shelf_column, shelf_row]);
 
   const initializeGrid = () => {
     const grid = new Array(rows);
@@ -45,9 +47,17 @@ const Pathfind = () => {
         if (grid[i][j].isStart) startNode = grid[i][j];
       }
     }
+    console.log(startNode);
+    console.log(endNode);
 
-    let path = Astar(startNode, endNode);
+    let path;
+    if(NODE_END_ROW !== null && NODE_END_COL !== null){
+      clearGrid();
+      path = Astar(startNode, endNode);
     setPath(path);
+    visualizeShortestPath(path);
+    }
+  
   };
 
   const createSpot = (grid) => {
@@ -172,14 +182,23 @@ const Pathfind = () => {
   );
 
   const visualizeShortestPath = (shortestPathNodes) => {
-    for (let i = 1; i < Path.length - 1; i++) {
+    for (let i = 1; i < shortestPathNodes.length - 1; i++) {
       setTimeout(() => {
-        const node = Path[i];
+        console.log(shortestPathNodes);
+        const node = shortestPathNodes[i];
         document.getElementById(`node-${node.x}-${node.y}`).className =
           "node node-shortest-path";
       }, 50 * i);
     }
   };
+
+  const clearGrid = () => {
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        if (document.getElementById(`node-${i}-${j}`).className == "node node-shortest-path") document.getElementById(`node-${i}-${j}`).className = "node";
+      }
+    }
+  }
 
   return (
     <>
