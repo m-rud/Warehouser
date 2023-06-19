@@ -7,11 +7,10 @@ import Navbar from './components/navbar';
 import Items from "./pages/items";
 import Map from "./pages/map";
 import Home from "./pages/home";
-import Scanner from "./components/Scanner";
 import Login from "./pages/login"
 
-import { collection, getDocs, getDoc, setDoc, doc, addDoc, orderBy, query, deleteDoc, where } from "firebase/firestore"
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
+import { collection, getDocs, query, where } from "firebase/firestore"
+import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { db } from "./firebase"
 
 function App() {
@@ -26,7 +25,6 @@ function App() {
     useEffect(() => {
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
-            console.log("test");
             if (user) {
                 getCurrentUser(user.email);
                 renderLogin();

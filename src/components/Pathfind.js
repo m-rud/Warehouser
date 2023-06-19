@@ -18,7 +18,6 @@ let sciany = [];
 
 const Pathfind = ({ shelf_column, shelf_row, onShelf }) => {
   const [Grid, setGrid] = useState([]);
-  const [Path, setPath] = useState([]);
 
   useEffect(() => {
     if (onShelf !== null) ON_SHELF = onShelf;
@@ -38,6 +37,7 @@ const Pathfind = ({ shelf_column, shelf_row, onShelf }) => {
       }
     }
     initializeGrid();
+    // eslint-disable-next-line
   }, [shelf_column, shelf_row]);
 
   const initializeGrid = () => {
@@ -67,7 +67,6 @@ const Pathfind = ({ shelf_column, shelf_row, onShelf }) => {
     if (NODE_END_ROW !== null && NODE_END_COL !== null) {
       clearGrid();
       path = Astar(startNode, endNode);
-      setPath(path);
       visualizeShortestPath(path);
     }
 
@@ -207,12 +206,11 @@ const Pathfind = ({ shelf_column, shelf_row, onShelf }) => {
   const clearGrid = () => {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
-        if (document.getElementById(`node-${i}-${j}`) && document.getElementById(`node-${i}-${j}`).className == "node node-shortest-path") document.getElementById(`node-${i}-${j}`).className = "node";
+        if (document.getElementById(`node-${i}-${j}`) && document.getElementById(`node-${i}-${j}`).className === "node node-shortest-path") document.getElementById(`node-${i}-${j}`).className = "node";
       }
     }
   }
 
-  //<button onClick={() => console.log(JSON.stringify(sciany))}>Pokaz dobudowe</button>
 
   return (
     <>
