@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
-
 import { collection, getDocs, getDoc, setDoc, doc, addDoc, orderBy, query, deleteDoc, where } from "firebase/firestore"
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { db } from "../firebase"
+import Box from "@mui/material/Box";
+import Fab from "@mui/material/Fab";
+import AddIcon from '@mui/icons-material/Add';
 
 function Map({ user }) {
     const [delivery, setDelivery] = useState([]);
@@ -102,7 +104,15 @@ function Map({ user }) {
         if (user) {
             if (user.role != "pracownik") {
                 return (
-                    <div onClick={() => setScreen("newDelivery")} style={{ height: "70px", width: "70px", position: "absolute", backgroundColor: "lightgreen", borderRadius: "50px", margin: "20px", bottom: "0", right: "0" }}><p style={{ fontSize: "40px", fontWeight: "bold", marginTop: "5px" }}>+</p></div>
+                    <Box m={2} position="absolute" bottom="0px" right="0px">
+                        <Fab
+                            color="success"
+                            aria-label="add"
+                            onClick={() => setScreen("newDelivery")}
+                        >
+                            <AddIcon />
+                        </Fab>
+                    </Box>
                 )
             }
         } else {
