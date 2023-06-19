@@ -85,13 +85,28 @@ function Map({ user }) {
     }
 
     const changeDeliveryStatus = async (event) => {
-        await setDoc(doc(db, "delivery", selectedDelivery.id), {
-            date: selectedDelivery.date,
-            items: selectedDelivery.items,
-            status: "Delivered",
-        });
-        setScreen("delivery");
-        getDelivery();
+        if (selectedDelivery.status != "Delivered") {
+            await setDoc(doc(db, "delivery", selectedDelivery.id), {
+                date: selectedDelivery.date,
+                items: selectedDelivery.items,
+                status: "Delivered",
+            });
+
+            for (let i = 0; i < selectedDelivery.items.length; i++) {
+                const docSnap = await getDoc(doc(db, "items", selectedDelivery.items[i].id));
+                let item = docSnap.data();
+                let newAmount = item.quantity + selectedDelivery.items[i].amount;
+                await setDoc(doc(db, "items", selectedDelivery.items[i].id), {
+                    name: item.name,
+                    quantity: newAmount,
+                    shelf: item.shelf,
+                    shelf_column: item.shelf_column || 0,
+                    shelf_row: item.shelf_row || 0,
+                });
+            }
+            setScreen("delivery");
+            getDelivery();
+        }
     }
 
     const deleteDelivery = async (event) => {
@@ -192,7 +207,7 @@ function Map({ user }) {
                             ))
                         }
                     </div>
-                    <button onClick={() => { changeDeliveryStatus(); setCounter(counter + 1) }} style={{ margin: "10px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "lightgreen" }}>Change status</button>
+                    <button onClick={() => { changeDeliveryStatus(); setCounter(counter + 1) }} disabled={selectedDelivery.status == "Delivered"} style={{ margin: "10px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "lightgreen" }}>Change status</button>
                     <button onClick={() => { deleteDelivery(); setCounter(counter + 1) }} style={{ margin: "10px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "red" }}>Delete</button>
                     <button onClick={() => setScreen("delivery")} style={{ margin: "10px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "gray" }}>Wróc</button>
                 </div>
