@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react"
 import { collection, getDocs, getDoc, doc, addDoc, orderBy, query, deleteDoc } from "firebase/firestore"
-
 import { db } from "../firebase"
+import Box from "@mui/material/Box";
+import Fab from "@mui/material/Fab";
+import AddIcon from '@mui/icons-material/Add';
+
 
 function Items() {
     const [items, setItems] = useState([]);
@@ -81,7 +84,15 @@ function Items() {
                             ))
                         }
                     </div>
-                    <div onClick={() => setAddItemShown(!addItemShown)} style={{ height: "70px", width: "70px", position: "absolute", backgroundColor: "lightgreen", borderRadius: "50px", margin: "20px", bottom: "0", right: "0" }}><p style={{ fontSize: "40px", fontWeight: "bold", marginTop: "5px" }}>+</p></div>
+                    <Box m={2} position="absolute" bottom="0px" right="0px">
+                        <Fab
+                        color="success"
+                        aria-label="add"
+                        onClick={() => setAddItemShown(!addItemShown)}
+                        >
+                        <AddIcon />
+                        </Fab>
+                    </Box>
                 </div>
             )
         }

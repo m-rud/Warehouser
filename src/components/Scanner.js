@@ -7,7 +7,7 @@ import Fab from "@mui/material/Fab";
 import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import CloseIcon from "@mui/icons-material/Close";
 
-const Scanner = ({setShelf_column, setShelf_row}) => {
+const Scanner = ({setShelf_column, setShelf_row, setOnShelf}) => {
   const [scanning, setScanning] = useState(false);
   const [qrCode, setQrCode] = useState();
 
@@ -48,13 +48,14 @@ const Scanner = ({setShelf_column, setShelf_row}) => {
     console.log(itemDict.shelf_column, " ", itemDict.shelf_row);
     setShelf_row(itemDict.shelf_row);
     setShelf_column(itemDict.shelf_column);
+    setOnShelf(itemDict.onShelf);
     };
 
   return (
     <div>
       <Box m={2} position="absolute" bottom="0px" right="0px">
         <Fab
-          color={scanning ? "warning" : "primary"}
+          color={scanning ? "error" : "primary"}
           aria-label="add"
           onClick={run}
         >

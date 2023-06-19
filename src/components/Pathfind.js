@@ -9,19 +9,34 @@ const rows = 30;
 const walls = Constants.walls;
 const shelfs = Constants.shelfs;
 
-const NODE_START_ROW = 3;
-const NODE_START_COL = 3;
+let NODE_START_ROW = 3;
+let NODE_START_COL = 3;
 let NODE_END_ROW = null;
 let NODE_END_COL = null;
+let ON_SHELF = false;
 let sciany = [];
 
-const Pathfind = ({shelf_column, shelf_row}) => {
+const Pathfind = ({shelf_column, shelf_row, onShelf}) => {
   const [Grid, setGrid] = useState([]);
   const [Path, setPath] = useState([]);
 
   useEffect(() => {
-    if(shelf_row !== null)NODE_END_COL = shelf_row;
-    if(shelf_column !== null)NODE_END_ROW = shelf_column;
+    if(onShelf !== null) ON_SHELF = onShelf;
+    if(ON_SHELF){
+      if(shelf_row !== null && shelf_column !== null) {
+        NODE_START_COL = shelf_row;
+        NODE_START_ROW = shelf_column;
+        NODE_END_ROW = 3;
+        NODE_END_COL = 3;
+      }
+    } else {
+      if(shelf_row !== null && shelf_column !== null){
+        NODE_END_COL = shelf_row;
+        NODE_END_ROW = shelf_column;
+        NODE_START_COL = 3;
+        NODE_START_ROW = 3;
+      }
+    }
     initializeGrid();
   }, [shelf_column, shelf_row]);
 
@@ -47,8 +62,6 @@ const Pathfind = ({shelf_column, shelf_row}) => {
         if (grid[i][j].isStart) startNode = grid[i][j];
       }
     }
-    console.log(startNode);
-    console.log(endNode);
 
     let path;
     if(NODE_END_ROW !== null && NODE_END_COL !== null){
@@ -184,7 +197,6 @@ const Pathfind = ({shelf_column, shelf_row}) => {
   const visualizeShortestPath = (shortestPathNodes) => {
     for (let i = 1; i < shortestPathNodes.length - 1; i++) {
       setTimeout(() => {
-        console.log(shortestPathNodes);
         const node = shortestPathNodes[i];
         document.getElementById(`node-${node.x}-${node.y}`).className =
           "node node-shortest-path";
@@ -200,12 +212,10 @@ const Pathfind = ({shelf_column, shelf_row}) => {
     }
   }
 
+  //<button onClick={() => console.log(JSON.stringify(sciany))}>Pokaz dobudowe</button>
+        
   return (
     <>
-      <button onClick={visualizeShortestPath}>Pokaz sciezke</button>
-      <button onClick={() => console.log(JSON.stringify(sciany))}>
-        Pokaz dobudowe
-      </button>
       <div className="wrapper">
         <div className="gridContainer">{gridWithNode}</div>
       </div>
