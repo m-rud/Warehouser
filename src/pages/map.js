@@ -73,7 +73,7 @@ function Map({ user }) {
                 let newDel = {
                     date: new Date().toLocaleDateString("en-GB") + " " + new Date().toLocaleTimeString(),
                     items: testList,
-                    status: "Processing"
+                    status: "W trakcie"
                 }
                 await addDoc(collection(db, "delivery"), newDel);
             }
@@ -85,11 +85,11 @@ function Map({ user }) {
     }
 
     const changeDeliveryStatus = async (event) => {
-        if (selectedDelivery.status != "Delivered") {
+        if (selectedDelivery.status != "Dostarczone") {
             await setDoc(doc(db, "delivery", selectedDelivery.id), {
                 date: selectedDelivery.date,
                 items: selectedDelivery.items,
-                status: "Delivered",
+                status: "Dostarczone",
             });
 
             for (let i = 0; i < selectedDelivery.items.length; i++) {
@@ -146,7 +146,7 @@ function Map({ user }) {
                             delivery?.map((delivery, i) => (
                                 <div key={delivery.id} onClick={() => { setSelectedDelivery(delivery); setScreen("deliveryDetails") }} style={{ width: "95%", height: "100px", borderRadius: "25px", boxShadow: "5px 0px 18px #888888", margin: "20px auto" }}>
                                     <div style={{ padding: "20px 20px 0", fontSize: "21px", fontWeight: "bold", textAlign: "left" }}>{delivery.date}</div>
-                                    <div style={{ width: "fit-content", marginTop: "6px", marginLeft: "10px", borderRadius: "20px", padding: "5px 20px", fontSize: "16px", textAlign: "center", backgroundColor: delivery.status == "Processing" ? "yellow" : "lightgreen" }}>{delivery.status}</div>
+                                    <div style={{ width: "fit-content", marginTop: "6px", marginLeft: "10px", borderRadius: "20px", padding: "5px 20px", fontSize: "16px", textAlign: "center", backgroundColor: delivery.status == "W trakcie" ? "yellow" : "lightgreen" }}>{delivery.status}</div>
                                 </div>
                             ))
                         }
@@ -163,9 +163,9 @@ function Map({ user }) {
                                 <div key={newDeliveryItem.id} style={{ width: "95%", height: "100px", borderRadius: "25px", boxShadow: "5px 0px 18px #888888", margin: "20px auto" }}>
                                     <div style={{ padding: "20px 20px 0", fontSize: "21px", fontWeight: "bold", textAlign: "left" }}>{newDeliveryItem.name}</div>
                                     <div style={{ padding: "5px 20px", fontSize: "16px", textAlign: "center" }}>
-                                        <button onClick={() => { changeNewItemAmount(i, false); setCounter(counter + 1) }} style={{ marginRight: "10px" }}>-</button>
+                                        <button onClick={() => { changeNewItemAmount(i, false); setCounter(counter + 1) }} style={{ marginRight: "10px", borderRadius: "25px", backgroundColor: "lightGreen", width: "30px", height: "30px" }}>-</button>
                                         {newDeliveryItem.amount}
-                                        <button onClick={() => { changeNewItemAmount(i, true); setCounter(counter + 1) }} style={{ marginLeft: "10px" }}>+</button>
+                                        <button onClick={() => { changeNewItemAmount(i, true); setCounter(counter + 1) }} style={{ marginLeft: "10px", borderRadius: "25px", backgroundColor: "lightGreen", width: "30px", height: "30px" }}>+</button>
                                     </div>
                                 </div>
                             ))
@@ -207,8 +207,8 @@ function Map({ user }) {
                             ))
                         }
                     </div>
-                    <button onClick={() => { changeDeliveryStatus(); setCounter(counter + 1) }} disabled={selectedDelivery.status == "Delivered"} style={{ margin: "10px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "lightgreen" }}>Change status</button>
-                    <button onClick={() => { deleteDelivery(); setCounter(counter + 1) }} style={{ margin: "10px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "red" }}>Delete</button>
+                    <button onClick={() => { changeDeliveryStatus(); setCounter(counter + 1) }} disabled={selectedDelivery.status == "Dostarczone"} style={{ margin: "10px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "lightgreen" }}>Zmień status</button>
+                    <button onClick={() => { deleteDelivery(); setCounter(counter + 1) }} style={{ margin: "10px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "red" }}>Usuń</button>
                     <button onClick={() => setScreen("delivery")} style={{ margin: "10px auto 0", width: "80%", height: "50px", fontSize: "21px", fontWeight: "bold", backgroundColor: "gray" }}>Wróc</button>
                 </div>
             )
