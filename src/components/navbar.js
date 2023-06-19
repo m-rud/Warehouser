@@ -14,7 +14,7 @@ function Navbar() {
 
     const routes = [
         {
-            label: "HOME",
+            label: "MAPA",
             path: "/",
 
         },
