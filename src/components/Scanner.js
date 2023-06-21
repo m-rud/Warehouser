@@ -1,13 +1,18 @@
 import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useState } from "react";
-import { getDoc, doc } from "firebase/firestore"
-import { db } from "../firebase"
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../firebase";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import CloseIcon from "@mui/icons-material/Close";
 
-const Scanner = ({ setShelf_column, setShelf_row, setOnShelf }) => {
+const Scanner = ({
+  setShelf_column,
+  setShelf_row,
+  setOnShelf,
+  setPlatformIdx,
+}) => {
   const [scanning, setScanning] = useState(false);
   const [qrCode, setQrCode] = useState();
 
@@ -47,6 +52,7 @@ const Scanner = ({ setShelf_column, setShelf_row, setOnShelf }) => {
     setShelf_row(itemDict.shelf_row);
     setShelf_column(itemDict.shelf_column);
     setOnShelf(itemDict.onShelf);
+    setPlatformIdx(itemDict.platform);
   };
 
   return (

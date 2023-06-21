@@ -20,6 +20,10 @@
   background-color: burlywood;
 }
 
+.node-platform {
+  background-color: brown;
+}
+
 .node-shortest-path {
   animation-name: shortestPath;
   animation-duration: 1.5s;
